@@ -13,8 +13,27 @@ dotenv.config()
 const app = express()
 
 // CORS
-const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5174'
-app.use(cors({ origin: allowedOrigin, credentials: true }))
+// const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5174'
+// app.use(cors({ origin: allowedOrigin, credentials: true }))
+
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5174";
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // mobile/Insomnia/Postman
+      if (origin === allowedOrigin) return callback(null, true);
+      callback(new Error("Not allowed by CORS"));
+    },
+    methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true,
+  })
+);
+
+// IMPORTANT for OPTIONS preflight (Vercel always sends this)
+app.options("*", cors());
+
 
 // Middleware
 app.use(express.json({ limit: '1mb' }))
