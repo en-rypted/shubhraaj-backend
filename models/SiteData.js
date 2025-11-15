@@ -4,7 +4,12 @@ const ProjectSchema = new mongoose.Schema({
   slug: String,
   title: String,
   description: String,
-  photos: [String]
+  photos: [
+    {
+      url: { type: String, required: true },
+      publicId: { type: String}
+    }
+  ]
 }, { _id: false })
 
 const TestimonialSchema = new mongoose.Schema({
